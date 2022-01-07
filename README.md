@@ -11,3 +11,4 @@ Change Config peramaters in MapGen.py:
  ikey='Admin API integration key',
  skey='integration secret key',
  host='api-....duosecurity.com',
+.
