@@ -1,0 +1,3 @@
+six
+setuptools
+duo-client
