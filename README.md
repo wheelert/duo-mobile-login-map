@@ -8,7 +8,8 @@ and put it in geodjango or simular.
 Requires Duo mobile client and admin-api access
 
 Change Config peramaters in MapGen.py:
+<pre>
  ikey='Admin API integration key',
  skey='integration secret key',
  host='api-....duosecurity.com',
-.
+</pre>
