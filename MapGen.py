@@ -48,7 +48,12 @@ for _site in sites:
 	_data = geolocator.geocode(_site[0]).raw
 	_coords.append([_data['lon'],_data['lat']])
 	log = _site[1]
-	_string += "var marker"+str(_cnt)+" = L.marker(["+ _data['lat'] +","+ _data['lon'] +"]).addTo(map)\n"
+	
+	if log['result'] == "SUCCESS":
+		_string += "var marker"+str(_cnt)+" = L.marker(["+ _data['lat'] +","+ _data['lon'] +"]).addTo(map)\n"
+	else:	
+		_string += "var marker"+str(_cnt)+" = L.marker(["+ _data['lat'] +","+ _data['lon'] +"],{color: 'red'}).addTo(map)\n"
+		
 	_string += "marker"+str(_cnt)+".bindPopup('<b>"+str(log['email'])+"</b><br>App:"+str(log['integration'])+"<br>IP:"+str(log['ip'])+"').openPopup();\n"
 	
 	time.sleep(2)
