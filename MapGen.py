@@ -59,7 +59,7 @@ for _site in sites:
 	time.sleep(2)
 	_cnt +=1
 	
-print(_string)
+#print(_string)
 
 
 map_file = open("map_template.html", "r")
