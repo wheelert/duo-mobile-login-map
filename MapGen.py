@@ -20,18 +20,29 @@ admin_api = duo_client.Admin(
     host='api-xxxxx.duosecurity.com',
 )
 
+
+
+_today = datetime.today()
+td = timedelta(30)
+_date2 = _today - td
+
+_mintime = _date2.timestamp()
+
 # Retrieve log info from API:
-logs = admin_api.get_authentication_log()
+logs = admin_api.get_authentication_log(mintime=_mintime)
 
 
 # Count authentications by country:
 counts = dict()
 sites = []
 
+
 for log in logs:
     city = log['location']['city']
     state = log['location']['state']
     country = log['location']['country']
+    
+    _timestamp = date.fromtimestamp( int(log['timestamp']) )
     
     if city != '':
     	_loc = log['location']['city'] +' '+ log['location']['state'] + ',' + log['location']['country']
@@ -54,12 +65,18 @@ for _site in sites:
 	else:	
 		_string += "var marker"+str(_cnt)+" = L.marker(["+ _data['lat'] +","+ _data['lon'] +"],{color: 'red'}).addTo(map)\n"
 		
-	_string += "marker"+str(_cnt)+".bindPopup('<b>"+str(log['email'])+"</b><br>App:"+str(log['integration'])+"<br>IP:"+str(log['ip'])+"').openPopup();\n"
+	_datetime = datetime.fromtimestamp( int(log['timestamp']) )
+	_strtime = str(_datetime.month)+"/"+str(_datetime.day)+"/"+str(_datetime.year)+" "+str(_datetime.hour)+":"+str(_datetime.minute)+":"+str(_datetime.second)	
+		
+	_poptxt = " <b>"+str(log['email'])+"</b><br> <b>App:</b>"+str(log['integration'])+"<br> <b>IP:</b>"+str(log['ip'])+"<br /><b>Location:</b> "+log['location']['city']+","+log['location']['state']+"<br /><b>date:</b>"+_strtime
+		
+	_string += "marker"+str(_cnt)+".bindPopup('"+ _poptxt +"').openPopup();\n"
 	
 	time.sleep(2)
 	_cnt +=1
 	
-#print(_string)
+	
+print(_string)
 
 
 map_file = open("map_template.html", "r")
@@ -74,9 +91,5 @@ if os.path.exists("map.html"):
 f = open("map.html","a")
 f.write(map_data)
 f.close()
-
-
-
-
 
 
