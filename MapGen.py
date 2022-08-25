@@ -17,13 +17,13 @@ geolocator = Nominatim(user_agent="duo login app", timeout=None)
 
 # Configuration and information about objects to create.
 admin_api = duo_client.Admin(
-     key='CHANGEME',
+     ikey='CHANGEME',
      skey='CHANGEME',
      host='api-xxxxx.duosecurity.com',
 )
 
 _today = datetime.today()
-td = timedelta(2)
+td = timedelta(1)
 _date2 = _today - td
 
 _mintime = _date2.timestamp()
@@ -36,6 +36,7 @@ counts = dict()
 sites = []
 log_count = len(logs)
 print(f"parsing {log_count} logs")
+
 for log in logs:
     city = log['location']['city']
     state = log['location']['state']
@@ -69,12 +70,13 @@ for _site in sites:
 
     if log['result'] == "SUCCESS":
         _string += "var marker" + str(_cnt) + " = L.marker([" + _data['lat'] + "," + _data['lon'] + "]).addTo(map)\n"
-    else:
-        _string += "var marker" + str(_cnt) + " = L.marker([" + _data['lat'] + "," + _data[
-            'lon'] + "],{color: 'red'}).addTo(map)\n"
+        if log['integration'] == "NHC Remote Desktop":
+            _string += "marker" + str(_cnt) + "._icon.classList.add('marker_green');\n"
 
-    # _datetime = datetime.fromtimestamp( int(log['timestamp']) )
-    # _strtime = str(_datetime.month)+"/"+str(_datetime.day)+"/"+str(_datetime.year)+" "+str(_datetime.hour)+":"+str(_datetime.minute)+":"+str(_datetime.second)
+    else:
+        _string += "var marker" + str(_cnt) + " = L.marker([" + _data['lat'] + "," + _data['lon'] + "]).addTo(map)\n"
+        _string += "marker" + str(_cnt) + "._icon.classList.add('marker_red');\n"
+
 
     _poptxt = " <b>" + str(log['email']) + "</b><br> <b>App:</b>" + str(log['integration']) + "<br> <b>IP:</b>" + str(log['ip']) + "<br /><b>Location:</b> " + log['location']['city'] + "," + log['location']['state'] + "<br /><b>date:</b>" + str(log_time)
 
